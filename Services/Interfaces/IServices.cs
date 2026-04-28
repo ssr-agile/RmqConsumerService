@@ -13,13 +13,40 @@ public interface IMessageProcessor
     Task ProcessAsync(QueueMessage message, CancellationToken cancellationToken);
 }
 
-public interface IDatabaseService
+//public interface IDatabaseService
+//{
+//    /// <summary>
+//    /// Creates a PostgreSQL database named <paramref name="axiaAcId"/>,
+//    /// a matching schema, and applies the SQL dump template.
+//    /// </summary>
+//    Task<bool> CreateDatabaseAndSchemaAsync(string axiaAcId, string email, CancellationToken cancellationToken);
+//}
+
+public interface IDatabaseOrchestrator
 {
-    /// <summary>
-    /// Creates a PostgreSQL database named <paramref name="axiaAcId"/>,
-    /// a matching schema, and applies the SQL dump template.
-    /// </summary>
-    Task<bool> CreateDatabaseAndSchemaAsync(string axiaAcId, string email, CancellationToken cancellationToken);
+    Task<bool> ProvisionTenantAsync(string axiaAcId, string email, CancellationToken ct);
+}
+
+public interface IAdminDbService
+{
+    Task<bool> DatabaseExistsAsync(string dbName, CancellationToken ct);
+    Task EnsureRoleAsync(string roleName, string password, CancellationToken ct);
+    Task TerminateConnectionsAsync(string dbName, CancellationToken ct);
+    Task CloneDatabaseAsync(string dbName, string template, CancellationToken ct);
+    Task SetDatabaseOwnerAsync(string dbName, string owner, CancellationToken ct);
+    Task CleanupAsync(string identifier, CancellationToken ct);  // rollback
+}
+
+public interface ITenantDbService
+{
+    Task ApplyPostCloneFixesAsync(string dbName, string templateSchema, CancellationToken ct);
+    Task SeedUserAsync(string dbName, string email, CancellationToken ct);
+    Task UpdateUserKeysAsync(string dbName, string email, string authKey, string userKey, CancellationToken ct);
+}
+
+public interface ILicenseService
+{
+    Task<LicenseResponse> ActivateAsync(string dbName, string email, CancellationToken ct);
 }
 
 public interface IEmailService

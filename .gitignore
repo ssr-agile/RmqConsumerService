@@ -4,3 +4,4 @@ Logs/
 *.user
 .vs/
 appsettings.*.json
+axiglobalconfig.json

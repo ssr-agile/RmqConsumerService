@@ -7,7 +7,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using System.Net.Http;
-//using Npgsql;
+using Npgsql;
 //using Npgsql.NpgsqlDataSource;
 
 
@@ -64,23 +64,35 @@ try
             services.Configure<LogSettings>(ctx.Configuration.GetSection("Logging"));
             services.Configure<AppConnectionSettings>(ctx.Configuration.GetSection("AppConnection"));
 
+            var dbSettings = configuration
+                .GetSection("Database")
+                .Get<DatabaseSettings>();
+            var adminConnStr = dbSettings.BuildConnectionString(dbSettings.AdminDatabase);
+
             // ── Core services ─────────────────────────────────────────────────
             // Singleton: shared across the lifetime of the app
             services.AddSingleton<IRabbitMqConsumer, RabbitMqConsumerService>();
-            //services.AddSingleton<NpgsqlDataSource>();
-            //services.AddNpgsqlDataSource(connectionString);
-            services.AddHttpClient();
+            //services.AddHttpClient();
+            services.AddHttpClient("LicenseClient", client =>
+            {
+                // base address + timeout set once here, not scattered in service
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
+            // Singleton DataSource for admin DB — one pool, shared safely
+            services.AddNpgsqlDataSource(adminConnStr);
 
             // Transient: fresh instance per message (created inside a DI scope)
             services.AddTransient<IMessageProcessor, MessageProcessorService>();
-            services.AddTransient<IDatabaseService,  DatabaseService>();
+            //services.AddTransient<IDatabaseService,  DatabaseService>();
             services.AddTransient<IEmailService,     EmailService>();
+            services.AddTransient<IAdminDbService, AdminDbService>();
+            services.AddTransient<ITenantDbService, TenantDbService>();
+            services.AddTransient<ILicenseService, LicenseService>();
+            services.AddTransient<IDatabaseOrchestrator, DatabaseOrchestrator>();
 
             // ── Handlers ──────────────────────────────────────────────────────
-            // To add a new handler: implement IQueueHandler, then add a line here.
             services.AddTransient<IQueueHandler, AxiAdminHandler>();
             services.AddTransient<IConfigurationFileService, ConfigurationFileService>();
-            // services.AddTransient<IQueueHandler, AnotherHandler>();
 
             // ── Hosted worker ─────────────────────────────────────────────────
             services.AddHostedService<Worker>();

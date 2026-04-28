@@ -26,7 +26,7 @@ public sealed class EmailService : IEmailService
         SendAsync(
             toEmail,
             subject:  $"✅ AXI Provisioning Complete – {orgName}",
-            htmlBody: EmailTemplates.Success(toEmail, orgName, axiaAcId, _appConnSettings.AppLoginUrl + axiaAcId),
+            htmlBody: EmailTemplates.Success(toEmail, orgName, axiaAcId, _appConnSettings.AppLoginUrl),
             ct);
 
     public Task SendFailureAsync(string toEmail, string orgName, string axiaAcId, string reason, CancellationToken ct) =>

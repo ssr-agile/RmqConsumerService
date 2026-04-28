@@ -18,14 +18,15 @@ public sealed class AxiAdminHandler : IQueueHandler
 
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
-    private readonly IDatabaseService _db;
+    //private readonly IDatabaseService _db;
+    private readonly IDatabaseOrchestrator _db;
     private readonly IEmailService _email;
     private readonly ILogger<AxiAdminHandler> _logger;
     private readonly DatabaseSettings _settings;
     private readonly IConfigurationFileService _configFiles;
 
 
-    public AxiAdminHandler(IDatabaseService db, IEmailService email, ILogger<AxiAdminHandler> logger, IOptions<DatabaseSettings> settings, IConfigurationFileService configFiles)
+    public AxiAdminHandler(IDatabaseOrchestrator db, IEmailService email, ILogger<AxiAdminHandler> logger, IOptions<DatabaseSettings> settings, IConfigurationFileService configFiles)
     {
         _db    = db;
         _email = email;
@@ -57,7 +58,8 @@ public sealed class AxiAdminHandler : IQueueHandler
         {
             //_logger.LogInformation("Step 1/2 – Provisioning database for AxiAcId={AxiAcId}", data.AxiAcId);
             _logger.LogInformation("Step 1/3 – Cloning template '{Template}' → database '{Db}'", _settings.TemplateDatabaseName, data.AxiAcId);
-            success = await _db.CreateDatabaseAndSchemaAsync(data.AxiAcId, data.Email, cancellationToken);
+            //success = await _db.CreateDatabaseAndSchemaAsync(data.AxiAcId, data.Email, cancellationToken);
+            success = await _db.ProvisionTenantAsync(data.AxiAcId, data.Email, cancellationToken);
 
             if (!success)
                 throw new InvalidOperationException("Database service returned false without throwing.");
