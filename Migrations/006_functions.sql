@@ -1,18 +1,16 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
 CREATE FUNCTION {schema}.add_months(start date, months integer) RETURNS date
     LANGUAGE sql IMMUTABLE
-    SET search_path = {schema}, pg_catalog
     AS $$
   SELECT (start + (months || ' months')::INTERVAL)::DATE
 $$;
 
 CREATE FUNCTION {schema}.axi_firesql(p_sql text, p_param_string text) RETURNS json
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     v_sql TEXT := p_sql;
@@ -79,7 +77,6 @@ $$;
 
 CREATE FUNCTION {schema}.axi_firesql_v2(p_sql text, p_param_string text, p_sourcekey text, p_fromlist text) RETURNS TABLE(id text, displaydata text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     v_sql TEXT := p_sql;
@@ -150,7 +147,6 @@ $$;
 
 CREATE FUNCTION {schema}.axp_pr_page_creation(pname character varying, pcaption character varying, ppagetype character varying, pparentname character varying, paction character varying, props character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
    pparent    VARCHAR (50);
@@ -199,7 +195,6 @@ $$;
 
 CREATE FUNCTION {schema}.axp_tr_search_appsearch() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     BEGIN
     if TG_OP = 'INSERT' or TG_OP = 'UPDATE' then
@@ -230,7 +225,6 @@ $$;
 
 CREATE FUNCTION {schema}.count_dcs(p_transid character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare 
     l_result varchar(15);
@@ -243,7 +237,6 @@ end; $$;
 
 CREATE FUNCTION {schema}.datediff(units character varying, start_t timestamp without time zone, end_t timestamp without time zone) RETURNS integer
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 diff_interval INTERVAL; 
@@ -282,7 +275,6 @@ $$;
 
 CREATE FUNCTION {schema}.execute_sql_list(sql_list text, sql_separator character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     query text;
@@ -296,7 +288,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_homebuild_master() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -315,7 +306,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_layoutdesign() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	declare 
 	v_sid numeric(15);
@@ -337,7 +327,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_layoutdesign_saved() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	declare 
 	v_sid numeric(15);
@@ -359,7 +348,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_notify() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -378,7 +366,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_page_saved() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -397,7 +384,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_page_templates() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -416,7 +402,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_pages() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -435,7 +420,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_widget() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -454,7 +438,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_widget_published() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -473,7 +456,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ax_widget_saved() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -492,7 +474,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axactivetasks() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_grpname varchar[] DEFAULT  ARRAY[]::varchar[];
@@ -1163,9 +1144,141 @@ return new;
 end; 
 $$;
 
+CREATE FUNCTION {schema}.fn_axdbget(ptransid character varying, precordid numeric DEFAULT 0) RETURNS TABLE(transid character varying, dcno character varying, griddc character varying, sqltext text)
+    LANGUAGE plpgsql
+    AS $$
+declare 
+rec record;
+rec2 record;
+v_sql text;
+v_primarydctable varchar;
+v_fldnamesary varchar[] DEFAULT  ARRAY[]::varchar[];
+v_fldname_joinsary varchar[] DEFAULT  ARRAY[]::varchar[];
+v_fldname_col varchar;
+v_fldname_normalized varchar;
+v_fldname_srctbl varchar;
+v_fldname_srcfld varchar;
+v_fldname_allowempty varchar;
+v_fldname_dctablename varchar;
+v_fldname_dcflds text;
+v_fldname_normalizedtables varchar[] DEFAULT  ARRAY[]::varchar[];
+v_emptyary varchar[] DEFAULT  ARRAY[]::varchar[];
+v_allflds varchar;
+v_dcdefaultcols varchar;
+v_griddc_orderby varchar;
+
+ 
+
+begin
+
+
+	select tablename into v_primarydctable from axpdc where tstruct = ptransid and dname ='dc1';
+	
+
+
+
+for rec in select string_agg(dname,',' order by dname) dname, asgrid ,lower(tablename) tablename 
+from axpdc where tstruct = ptransid 
+group by asgrid ,lower(tablename)
+order by 1 
+loop
+		
+	 		
+			select concat(tablename,'=',string_agg(str,'|'))  into v_allflds From(
+			select tablename, concat(fname,'~',srckey,'~',srctf,'~',srcfld,'~',allowempty) str,dcname,ordno
+			from axpflds where tstruct=ptransid and savevalue='T' and lower(tablename) = rec.tablename and datatype !='i'
+			union all
+			select tablename, concat(fname,' ',fname,'_sourceid','~','F','~',srctf,'~',srcfld,'~',allowempty) str,dcname,ordno
+			from axpflds where tstruct=ptransid and savevalue='T' and lower(tablename) = rec.tablename and datatype !='i'
+			and srckey='T'
+			order by dcname ,ordno)a group by a.tablename;		
+		
+if length(v_allflds) > 1 then
+
+	if rec.tablename = v_primarydctable then 		
+		select string_agg(fnames,',') into v_dcdefaultcols 
+		from 
+		(select concat(v_primarydctable,'.',unnest(string_to_array(v_primarydctable||'id,cancel,sourceid,mapname,username,modifiedon,createdby,createdon,wkid,app_level,app_desc,app_slevel,cancelremarks,wfroles',',')))fnames)a;
+	end if;
+	
+
+	if rec.asgrid = 'F' and rec.tablename != v_primarydctable then		
+		v_dcdefaultcols = concat(rec.tablename,'.',v_primarydctable||'id,',rec.tablename,'.',rec.tablename||'id');
+	elsif rec.asgrid = 'T' and rec.tablename != v_primarydctable then
+		v_dcdefaultcols =  concat(rec.tablename,'.',v_primarydctable||'id,',rec.tablename,'.',rec.tablename||'id,',rec.tablename,'.',rec.tablename||'row');
+		v_griddc_orderby = concat(' order by ',rec.tablename||'row');
+	end if;
+
+				FOR rec2 IN
+    		select unnest(string_to_array(split_part(unnest(string_to_array(v_allflds,'^')),'=',2),'|')) fldname    		    	       			
+				loop		    	
+					v_fldname_col := split_part(rec2.fldname,'~',1);
+					v_fldname_normalized := split_part(rec2.fldname,'~',2);
+					v_fldname_srctbl := split_part(rec2.fldname,'~',3);
+					v_fldname_srcfld := split_part(rec2.fldname,'~',4);	
+					v_fldname_allowempty := split_part(rec2.fldname,'~',5);
+			    
+				
+					
+					if v_fldname_normalized ='F' then 						
+						v_fldnamesary := array_append(v_fldnamesary,concat(rec.tablename,'.',v_fldname_col)::varchar);					
+					elsif v_fldname_normalized ='T' then	
+						v_fldnamesary := array_append(v_fldnamesary,concat(v_fldname_col,'.',v_fldname_srcfld,' ',v_fldname_col)::varchar);	
+						v_fldname_joinsary := array_append(v_fldname_joinsary,concat(case when v_fldname_allowempty='F' then ' join ' else ' left join ' end,v_fldname_srctbl,' ',v_fldname_col,' on ',rec.tablename,'.',v_fldname_col,' = ',v_fldname_col,'.',v_fldname_srctbl,'id')::Varchar);
+						v_fldname_normalizedtables := array_append(v_fldname_normalizedtables,lower(v_fldname_srctbl));
+					end if;
+								
+			    end loop;
+		   
+		
+	transid = ptransid;
+	dcno = rec.dname;
+	griddc = rec.asgrid;
+	sqltext = concat('select ',v_dcdefaultcols,',',array_to_string(v_fldnamesary,','),' from ',rec.tablename,' ',array_to_string(v_fldname_joinsary,' '),' where ',rec.tablename,'.',v_primarydctable||'id= :recordid',v_griddc_orderby);
+
+	v_fldnamesary:= v_emptyary;
+	v_fldname_joinsary:= v_emptyary;
+	v_griddc_orderby := null;
+
+	return next;
+end if;
+
+end loop;
+		   	
+ 
+
+		   			
+
+		  END; $$;
+
+CREATE FUNCTION {schema}.fn_axdbput_getrecid(psiteno integer, pnoofrows integer) RETURNS TABLE(recordid character varying)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    v_seq_num     bigint;
+    v_pad_length  int;
+	v_pad_sitelength int;
+    v_final       varchar;
+BEGIN
+ 	v_pad_length := 12;
+	v_pad_sitelength := 3;
+	
+
+    FOR i IN 1 .. pnoofrows LOOP
+
+        v_seq_num := nextval('seq_axdb_recordid');
+
+        v_final := rpad(psiteno  ::varchar, v_pad_sitelength, '0')|| lpad(v_seq_num::varchar, v_pad_length, '0');
+
+        recordid := v_final;
+        RETURN NEXT;
+    END LOOP;
+
+END;
+$$;
+
 CREATE FUNCTION {schema}.fn_axi_get_fieldvalues_with_keysuffix_list(p_tstruct text, p_fieldname text) RETURNS TABLE(displaydata text, id text, caption text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE 
     v_sql text; 
@@ -1248,7 +1361,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axi_getkeyvalueswithfieldnameslist(p_tstruct text, p_fieldname text) RETURNS TABLE(displaydata text, id text, caption text, isfield text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $_$
 DECLARE
   v_sql        text;
@@ -1366,7 +1478,6 @@ $_$;
 
 CREATE FUNCTION {schema}.fn_axi_metadata(pstructtype character varying, pusername character varying) RETURNS TABLE(structtype text, caption text, transid character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $_$
 declare 
 declare v_sql varchar;
@@ -1490,7 +1601,6 @@ $_$;
 
 CREATE FUNCTION {schema}.fn_axi_struct_metadata(pstructtype character varying, ptransid character varying, pobjtype character varying) RETURNS TABLE(objtype character varying, objcaption text, objname character varying, dcname character varying, asgrid character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $_$
 declare 
 declare v_sql varchar;
@@ -1516,7 +1626,6 @@ $_$;
 
 CREATE FUNCTION {schema}.fn_axp_appsearch_data_period() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 
 	BEGIN
@@ -1558,7 +1667,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axp_mailjobs() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	declare 
 	v_sid numeric(15);
@@ -1580,7 +1688,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_ap_charts(pentity_transid character varying, pcriteria character varying, pfilter character varying, pusername character varying DEFAULT 'admin'::character varying, papplydac character varying DEFAULT 'T'::character varying, puserrole character varying DEFAULT 'All'::character varying, pconstraints text DEFAULT NULL::text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 rec record;
@@ -1833,7 +1940,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_chartdata(psource character varying, pentity_transid character varying, pcondition character varying, pcriteria character varying, pfilter character varying DEFAULT 'NA'::character varying, pusername character varying DEFAULT 'admin'::character varying, papplydac character varying DEFAULT 'T'::character varying, puserrole character varying DEFAULT 'All'::character varying, pconstraints text DEFAULT NULL::text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 rec record;
@@ -2100,7 +2206,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_edittxn(ptransid character varying, precordid numeric, pusername character varying DEFAULT 'admin'::character varying, papplydac character varying DEFAULT 'T'::character varying) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -2363,7 +2468,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_filterdata(ptransid character varying, pflds text) RETURNS TABLE(datavalue character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sql text;
@@ -2386,7 +2490,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_ins_axreltn() RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 begin
 	
@@ -2404,7 +2507,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_listdata(ptransid character varying, pflds text DEFAULT 'All'::text, ppagesize numeric DEFAULT 25, ppageno numeric DEFAULT 1, pfilter text DEFAULT 'NA'::text, puser character varying DEFAULT 'admin'::character varying, papplydac character varying DEFAULT 'T'::character varying, puserrole character varying DEFAULT 'All'::character varying, pconstraints text DEFAULT NULL::text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -2613,7 +2715,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_metadata(ptransid character varying, psubentity character varying DEFAULT 'F'::character varying, planguage character varying DEFAULT 'English'::character varying) RETURNS SETOF {schema}.axpdef_axpanalytics_mdata
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 r axpdef_axpanalytics_mdata%rowtype;
@@ -2721,7 +2822,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_pegstatus(ptransid character varying, precordid numeric) RETURNS TABLE(axpeg_processname character varying, axpeg_keyvalue character varying, axpeg_status numeric, axpeg_statustext text, axpeg_recordid numeric)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_pegtable text;
@@ -2751,7 +2851,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_se_chartdata(pcriteria character varying) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 rec record;
@@ -2826,7 +2925,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpanalytics_se_listdata(pentity_transid character varying, pflds_keyval text, ppagesize numeric DEFAULT 50, ppageno numeric DEFAULT 1) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 rec record;
@@ -2993,7 +3091,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpmailjobs() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	declare 
 	v_sid numeric(15);
@@ -3015,27 +3112,25 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axprocessdefv2_index_update(pprocessname character varying, pindexno numeric, dbevent character varying, recordid numeric, poldindexno numeric) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare
 v_axprocessdefv2id numeric;
 begin
-	
+ 
 if dbevent = 'Insert' then 
-	select axprocessdefv2id into v_axprocessdefv2id from axprocessdefv2 where processname = pprocessname and indexno = pindexno and axprocessdefv2id!=recordid;
-	if v_axprocessdefv2id is not null then
-			update axprocessdefv2 set indexno = indexno+1 where axprocessdefv2id = v_axprocessdefv2id;	
-			update axprocessdefv2 set indexno = indexno+1 where processname=pprocessname and indexno>pindexno and  axprocessdefv2id != v_axprocessdefv2id and axprocessdefv2id != recordid;
-	end if;
+ select axprocessdefv2id into v_axprocessdefv2id from axprocessdefv2 where processname = pprocessname and indexno = pindexno and axprocessdefv2id!=recordid;
+ if v_axprocessdefv2id is not null then
+    update axprocessdefv2 set indexno = indexno+1 where processname=pprocessname and indexno>pindexno and  axprocessdefv2id != v_axprocessdefv2id and axprocessdefv2id != recordid;
+ end if;
 end if;
 
 
 if dbevent = 'Update' then
-	update axprocessdefv2 set indexno = indexno+1 where processname=pprocessname and indexno>=pindexno and indexno < poldindexno and  axprocessdefv2id != recordid;
+ update axprocessdefv2 set indexno = indexno+1 where processname=pprocessname and indexno>=pindexno and indexno < poldindexno and  axprocessdefv2id != recordid;
 end if;
 
 if dbevent = 'Delete' then
-	update axprocessdefv2 set indexno = indexno-1 where processname=pprocessname and indexno>pindexno and  axprocessdefv2id != recordid;
+ update axprocessdefv2 set indexno = indexno-1 where processname=pprocessname and indexno>pindexno and  axprocessdefv2id != recordid;
 end if;
 
 exception when others then 
@@ -3047,7 +3142,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axpscriptrunner() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	DECLARE
    v_trg varchar(100) := coalesce( new.trg_name, 'NA');
@@ -3062,7 +3156,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axrelations() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     
     begin
@@ -3139,7 +3232,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axsms() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	declare 
 	v_sid numeric(15);
@@ -3160,7 +3252,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axuserlevelgroups() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     
     BEGIN
@@ -3186,7 +3277,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axusers() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     
     BEGIN
@@ -3211,7 +3301,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_axusers_usergrp(pusername character varying, pusergroup character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 begin
 	
@@ -3226,7 +3315,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_dac_masterdata(pmtransid character varying, pmfldname character varying, pminctransid numeric, pmcnd numeric) RETURNS TABLE(datavalue character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sql text;
@@ -3253,7 +3341,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_fastprint_formdata_sql(ptransid character varying) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec1 record;
@@ -3331,7 +3418,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_generate_cardjson(pchartprops text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
     cardprops1 text;
@@ -3358,9 +3444,24 @@ RETURN cardprops1;
 END;
 $$;
 
+CREATE FUNCTION {schema}.fn_get_axpertcomps_name(pinput text) RETURNS text
+    LANGUAGE sql
+    AS $$
+    SELECT string_agg(pout, ',')
+    FROM (
+        SELECT 
+            substring(
+                val, 
+                position('-(' in val) + 2, 
+                length(val) - (position('-(' in val) + 1) - 1
+            ) AS pout
+        FROM unnest(string_to_array(pinput, ',')) AS val
+        WHERE length(pinput) > 2
+    ) a;
+$$;
+
 CREATE FUNCTION {schema}.fn_get_query_cols(pquery text) RETURNS TABLE(column_list character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 BEGIN
@@ -3373,7 +3474,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_homebuild_saved_bir() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sid numeric(15);
@@ -3392,7 +3492,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_iconfiguration() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare
 v_cnt numeric(2);
@@ -3446,9 +3545,23 @@ v_sql varchar(4000);
 end; 
 $$;
 
+CREATE FUNCTION {schema}.fn_mobile_axactivemsg(pmsgtypes text, pdelimiter character varying DEFAULT ','::character varying) RETURNS TABLE(msgtype character varying, fromuser character varying, touser character varying, tasktype character varying, displaytitle text, displaycontent text, requestpayload text)
+    LANGUAGE sql
+    AS $$
+    SELECT 
+        msgtype, 
+        fromuser, 
+        touser, 
+        tasktype, 
+        displaytitle, 
+        displaycontent, 
+        requestpayload 
+    FROM axactivemessages 
+    WHERE msgtype = ANY(string_to_array(pmsgtypes, pdelimiter));
+$$;
+
 CREATE FUNCTION {schema}.fn_peg_assigntoactor(assigntoactor character varying, actorfilter character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 rec record;
@@ -3554,7 +3667,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_peg_assigntorole(useridentificationfilter character varying, useridentificationfilter_of character varying, initiator character varying, priorusername character varying, assigntorole character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 rec record;
@@ -3609,7 +3721,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_peg_utl_actorusers(assigntoactor character varying, actorfilter character varying, pinitiator character varying) RETURNS TABLE(pusername character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_assignmodecnd int;
@@ -3670,7 +3781,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_editabletask(p_processname character varying, p_taskname character varying, p_keyvalue character varying, p_currentuser character varying, p_indexno numeric) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_flag varchar(1);
@@ -3731,7 +3841,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_tasklists(pprocessname character varying, pindexno numeric, ptaskname character varying DEFAULT NULL::character varying, ptransid character varying DEFAULT NULL::character varying, precordid numeric DEFAULT 0, pusername character varying DEFAULT NULL::character varying, ptaskid numeric DEFAULT 0, pkeyvalue character varying DEFAULT NULL::character varying) RETURNS TABLE(taskname character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_sql text;
@@ -3746,7 +3855,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_updapp_datagroups() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_newusers varchar(4000);
@@ -3803,7 +3911,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_updapp_default() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_newusers varchar(4000);
@@ -3857,7 +3964,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_updapp_reporting(p_fromuser character varying, p_existingapp character varying, p_newapp character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 begin 
 
@@ -3893,7 +3999,6 @@ end; $$;
 
 CREATE FUNCTION {schema}.fn_pegv2_updapp_usegroups() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_newusers varchar(4000);
@@ -3950,7 +4055,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_apptstructs(pusername character varying, puserrole character varying, ptype character varying DEFAULT 'Tstruct'::character varying) RETURNS TABLE(transid character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 BEGIN
     RETURN QUERY
@@ -3967,7 +4071,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_axupscript() RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -3995,7 +4098,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.fn_permissions_create_grpcol(ptransid character varying, ptable character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_altersql text; 
@@ -4020,7 +4122,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getadscnd(ptransid character varying, padsname character varying, pusername character varying, proles character varying DEFAULT 'All'::character varying, pkeyfield character varying DEFAULT NULL::character varying, pkeyvalue character varying DEFAULT NULL::character varying) RETURNS TABLE(fullcontrol character varying, userrole character varying, view_access character varying, view_includeflds character varying, view_excludeflds character varying, maskedflds character varying, filtercnd text, permissiontype character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -4129,7 +4230,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getadssql(ptransid character varying, padsname character varying, pcond text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -4137,50 +4237,45 @@ v_adssql text;
 v_filtersql text;
 v_primarydctable varchar;
 v_filtercnd text;
-v_addfilter varchar;
-v_addcolselection varchar;
 v_addpagination varchar;
-v_addsoring varchar;
-v_grouping varchar;
+v_dimensions varchar;
 begin
 
 
 
 
-select sqltext,case when smartlistcnd like '%Dynamic select columns%' then 'T' else 'F' end dynamiccolumns,
-case when smartlistcnd like '%Filter%' then 'T' else 'F' end filters,
-case when smartlistcnd like '%Pagination%' then 'T' else 'F' end pagination,
-case when smartlistcnd like '%Sorting%' then 'T' else 'F' end sorting,
-case when smartlistcnd like '%Grouping%' then 'T' else 'F' end aggregations
-into v_adssql,v_addcolselection,v_addfilter,v_addpagination,v_addsoring,v_grouping from axdirectsql 
+select sqltext,coalesce(pagination,'T') pagination,applydimensions
+into v_adssql,v_addpagination,v_dimensions 
+from axdirectsql 
 where sqlname = padsname;
 
-if pcond !='NA' then 
-
-select tablename into v_primarydctable from axpdc where tstruct = ptransid and dname ='dc1';
 
 
-v_filtercnd := concat(' and (',replace(pcond,'{primarytable.}',v_primarydctable||'.'),')');
-	
-v_filtersql := replace(v_adssql,'--ax_permission_filter',v_filtercnd);
 
-
-end if;
-
-
-v_adssql := concat(case when v_addcolselection='T' 
-then 'select --ax_select_columns 
-from('else 'select * from(' end
-,v_adssql,')wpc
-',case when v_addfilter='T' then '--ax_ui_filter_withwhere
-'end,
-case when v_grouping='T' then '--ax_groupby
-'end,
-case when v_addsoring='T' then '--ax_orderby
-'end,
+v_adssql := concat('select --ax_select_columns 
+from(
+',v_adssql,'
+)wpc
+',case when v_dimensions='T' then ' --ax_permission_filter
+' end,
+'--ax_ui_filter_withwhere
+',
+'--ax_groupby
+',
+'--ax_orderby
+',
 case when v_addpagination='T' then '--ax_pagination
 'end);
 
+if pcond !='NA' then 
+
+
+v_filtercnd := concat(' and (',replace(pcond,'{primarytable.}',''),')');
+	
+v_filtersql := replace(v_adssql,'--ax_permission_filter',concat(' where 1=1 ',v_filtercnd));
+
+
+end if;
 
 return case when pcond ='NA' then  v_adssql else v_filtersql end;
 	
@@ -4190,7 +4285,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getcnd(pmode character varying, ptransid character varying, pkeyfld character varying, pkeyvalue character varying, pusername character varying, proles character varying DEFAULT 'All'::character varying, pglobalvars character varying DEFAULT 'NA'::character varying) RETURNS TABLE(fullcontrol character varying, userrole character varying, allowcreate character varying, view_access character varying, view_includedc character varying, view_excludedc character varying, view_includeflds character varying, view_excludeflds character varying, edit_access character varying, edit_includedc character varying, edit_excludedc character varying, edit_includeflds character varying, edit_excludeflds character varying, maskedflds character varying, filtercnd text, recordid numeric, encryptedflds character varying, permissiontype character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -4433,7 +4527,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getdcrecid(ptransid character varying, precordid numeric, pdcstring character varying) RETURNS TABLE(dcname character varying, rowno numeric, recordid numeric)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_rec record;
@@ -4482,7 +4575,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getpermission(pmode character varying, ptransid character varying, pusername character varying, proles character varying DEFAULT 'All'::character varying, pglobalvars character varying DEFAULT 'NA'::character varying) RETURNS TABLE(transid character varying, fullcontrol character varying, userrole character varying, allowcreate character varying, view_access character varying, view_includedc character varying, view_excludedc character varying, view_includeflds character varying, view_excludeflds character varying, edit_access character varying, edit_includedc character varying, edit_excludedc character varying, edit_includeflds character varying, edit_excludeflds character varying, maskedflds character varying, filtercnd text, encryptedflds character varying, permissiontype character varying, viewctrl character varying, editctrl character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -4677,7 +4769,6 @@ loop
 		view_includeflds := case when rec.viewctrl='0' then view_includeflds else concat(view_includeflds,',',edit_includeflds) end;		
 		view_includedc :=case when rec.viewctrl='0' then view_includedc else  concat(view_includedc,',',edit_includedc) end;
 		allowcreate := rec.allowcreate;
-		--filtercnd := rec.cnd;
 filtercnd := array_to_string(v_final_conditions,' and ');
 		select string_agg(fname,',') into encryptedflds  from axpflds  where tstruct=rec_transid.transid and encrypted='T' and exists (select 1 from unnest(string_to_array(view_includeflds,',')) val where val = fname);
 		fullcontrol:= null;
@@ -4699,7 +4790,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_getsqls(pmode character varying, ptransid character varying, pkeyfld character varying, pkeyvalue character varying, pcond text, pincdc character varying, pexcdc character varying, pincflds text, pexcflds text) RETURNS TABLE(dcno character varying, dcsql text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 rec record;
@@ -4839,7 +4929,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_permissions_grpmaster(pgrpname character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     v_altersql text; 
@@ -4863,7 +4952,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ruledef_formula(formula text, applicability character varying, nexttask character varying, nexttask_true character varying, nexttask_false character varying, pegversion character varying DEFAULT 'v1'::character varying) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
     v_formula text;
@@ -4930,7 +5018,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ruledef_table_genaxscript(pcmd character varying, ptbldtls character varying, pcnd numeric) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
     v_formula varchar(2000);
@@ -5016,7 +5103,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ruledef_tablefield(pcnd numeric) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_json varchar;
@@ -5059,7 +5145,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ruledefv3_masking(pmaskstring text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 v_maskstring varchar;
@@ -5097,7 +5182,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_ruledefv3_scriptgen(pcmd character varying, pfldstring text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_fldnames text;
@@ -5118,7 +5202,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_tconfiguration() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 	v_cnt numeric(2);
@@ -5212,7 +5295,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_tstruct_getdcrecid(ptransid character varying, precordid numeric, pdcstring character varying) RETURNS TABLE(dcname character varying, rowno numeric, recordid numeric)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_rec record;
@@ -5263,7 +5345,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_updatdsign() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 	BEGIN
 
@@ -5289,7 +5370,6 @@ $$;
 
 CREATE FUNCTION {schema}.fn_upsert_config_by_condition(p_tablename text, p_fieldnames text, p_fieldvalues text, p_where_clause text) RETURNS TABLE(status text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     v_exists     boolean;
@@ -5354,7 +5434,6 @@ $_$;
 
 CREATE FUNCTION {schema}.get_ads_dropdown_data(p_tablename text, p_fieldname text) RETURNS TABLE(displaydata text, name text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 BEGIN
     RETURN QUERY EXECUTE format(
@@ -5368,7 +5447,6 @@ $$;
 
 CREATE FUNCTION {schema}.get_columns_name(p_selectquery character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare 
     l_result  varchar(32767);
@@ -5383,7 +5461,6 @@ end; $$;
 
 CREATE FUNCTION {schema}.get_columns_names(p_selectquery character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare 
     l_result  varchar(32767);
@@ -5399,7 +5476,6 @@ end; $$;
 
 CREATE FUNCTION {schema}.get_dynamic_field(p_tstruct text, p_fieldname text) RETURNS TABLE(displaydata text, id text)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
   v_sql        text;
@@ -5438,7 +5514,6 @@ $$;
 
 CREATE FUNCTION {schema}.get_sql_columns(sql_query text) RETURNS text
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     column_names text;
@@ -5485,7 +5560,6 @@ $$;
 
 CREATE FUNCTION {schema}.getiview(isql character varying, inoofrec numeric, ipageno numeric, icountflag numeric, oresult refcursor, oiviewcount refcursor) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
   v_frompos numeric;
@@ -5509,7 +5583,6 @@ $$;
 
 CREATE FUNCTION {schema}.is_number(p_value character varying) RETURNS numeric
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 Declare 
 v_num NUMERIC;
@@ -5523,7 +5596,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.join_comma(p_cursor refcursor, p_del character varying DEFAULT ','::character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
     l_value   varchar(32767);
@@ -5543,7 +5615,6 @@ $$;
 
 CREATE FUNCTION {schema}.populate_axdirectsql_metadata() RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
     r RECORD;
@@ -5601,7 +5672,6 @@ $$;
 
 CREATE FUNCTION {schema}.pr_axcnfg_tab_create(structtransid character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 v_cnt numeric(2) ;
@@ -5619,7 +5689,6 @@ $$;
 
 CREATE FUNCTION {schema}.pr_axcnfgiv_tab_create(structtransid character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
 v_cnt numeric(2) ;
@@ -5637,7 +5706,6 @@ $$;
 
 CREATE FUNCTION {schema}.pr_bulk_page_delete() RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ 
 declare 
 i varchar(3000);
@@ -5654,7 +5722,6 @@ end; $$;
 
 CREATE FUNCTION {schema}.pr_bulkexecute(pintext character varying, pintrg character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 Declare 
 v_rowcount numeric(15) :=0;
@@ -5674,17 +5741,14 @@ end; $$;
 
 CREATE FUNCTION {schema}.pr_executescript_new(ptablename character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ declare 	sqlstmt refcursor; rec record; temp1 varchar(1000); begin truncate table axonlineconvlog; open sqlstmt for execute 'SELECT case when substring(lower(psqlquery),1,1) in (''i'',''u'',''d'')  then psqlquery else substring(psqlquery,2,length(psqlquery)) end as psqlquery  FROM ' || ptablename; fetch next from sqlstmt into rec; while found loop begin execute rec.psqlquery; exception when others then insert into axonlineconvlog(script,tablename,errmsg ) values(rec.psqlquery,ptablename,SQLERRM); end; fetch next from sqlstmt into rec; end loop; close sqlstmt; temp1 := 'drop table ' || ptablename; execute temp1; end; $$;
 
 CREATE FUNCTION {schema}.pr_executescript_thread_new(ptablename character varying, pfieldname character varying, pgroupfield character varying, pthread numeric) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$ declare sqlstmt  varchar(4000); createtblstmt  varchar(4000); createindexstmt varchar(4000); BEGIN createtblstmt := 'create temp table '||ptablename||'_t on commit drop  as select  b1.'||pgroupfield||',mod(rank()over(order by b1.'||pgroupfield||'),'||pthread||')  as '||pfieldname||' from (select '||pgroupfield||' from '||ptablename||' group by '||pgroupfield||' ) b1'; createindexstmt := 'create index i_'||ptablename||' on '||ptablename||'_t ('||pgroupfield||')'; sqlstmt := ' update '||ptablename||' a set '||pfieldname||'= ( select b.'||pfieldname||' from '||ptablename||'_t b where b.'||pgroupfield||'=a.'||pgroupfield||') where exists (select  1 from  '||ptablename||'_t b where  b.'||pgroupfield||'=a.'||pgroupfield||') ';  execute createtblstmt; execute createindexstmt; execute sqlstmt  ; end; $$;
 
 CREATE FUNCTION {schema}.pr_homeconfig_pagelist(ppageid character varying) RETURNS TABLE(pcaption character varying, pname character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 begin
 
@@ -5706,7 +5770,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_pegv2_processlist(pprocessname character varying) RETURNS TABLE(taskname character varying, tasktype character varying, tasktime character varying, taskfromuser character varying, taskstatus character varying, displayicon character varying, displaytitle text, taskid character varying, keyfield character varying, keyvalue character varying, recordid numeric, transid character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_createtblscr varchar(4000);
@@ -5723,7 +5786,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_pegv2_processprogress(pprocessname character varying, pkeyvalue character varying) RETURNS TABLE(processname character varying, taskname character varying, indexno numeric, eventdatetime character varying, taskstatus character varying, taskid character varying, transid character varying, keyfield character varying, keyvalue character varying, recordid numeric, rnum numeric)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_createtblscr varchar(4000);
@@ -5769,7 +5831,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_pegv2_sendto_userslist(pallowsendflg numeric, pactor character varying, pprocessname character varying, pkeyvalue character varying, ptaskname character varying) RETURNS TABLE(pusername character varying)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare
 v_usergroup_in varchar;
@@ -5821,7 +5882,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_pegv2_transactionstatus(ptransid character varying, pkeyvalue character varying) RETURNS TABLE(processname character varying, taskname character varying, status character varying, statustext character varying, recordid numeric, keyvalue character varying, username character varying, eventdatetime character varying, indexno numeric, cnd numeric)
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_qry text;
@@ -5881,7 +5941,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_pegv2_transcurstatus(ptransid character varying, pkeyvalue character varying, pprocess character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_qry text;
@@ -5902,7 +5961,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pr_source_trigger(phltype character varying, pstructname character varying, psearchtext character varying, psrctable character varying, psrcfield character varying, pparams character varying, pdocid character varying, psrcmultipletransid character varying, pparamchange character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $_$
 declare
    pscripts   VARCHAR (3000);
@@ -6086,7 +6144,6 @@ $_$;
 
 CREATE FUNCTION {schema}.pr_utl_forms_menutree(ppagetype character varying) RETURNS character varying
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare v_mtree varchar(1000);
 begin
@@ -6108,7 +6165,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.pro_axplogstatextract(fdate date) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 BEGIN
    ------ usage details
@@ -6309,7 +6365,6 @@ END;$$;
 
 CREATE FUNCTION {schema}.pro_emailformat(ptemplate character varying, pkeyword character varying, ptype character varying, psendto character varying, psendcc character varying) RETURNS void
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 v_subject varchar(3500);
@@ -6370,7 +6425,6 @@ $$;
 
 CREATE FUNCTION {schema}.random_number() RETURNS numeric
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
    v_num   numeric (20);
@@ -6384,63 +6438,8 @@ BEGIN
 END;
 $$;
 
-CREATE FUNCTION {schema}.setup_new_user(p_username text, p_email text, p_nickname text, p_password text) RETURNS void
-    LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
-    AS $$
-BEGIN
-    -- 1. Insert into axusers
-    INSERT INTO {schema}.axusers 
-    (
-        username, "password", usergroup, groupno, build, manage, tools, 
-        email, active, isfirsttime, workflow, actflag, importstruct, 
-        exportstruct, appmanager, debug, import_data, export_data, 
-        pusername, nickname, ppassword, usertype, pwdauth, otpauth, 
-        allusergroup, appmgraccess, adminaccess, homepage, singleloginkey, staysignedin, signinexpiry,
-        axusersid
-    ) 
-    VALUES (
-        p_username, 
-        p_password,
-        'default', 2, 'T', 'T', 'T', 
-        p_email, 'T', 'F', 'T', 'T', 'T', 
-        'T', 'T', 'T', 'T', 'T', 
-        p_username, p_nickname, p_password, 
-        NULL, 'T', 'F', 'default', 'T', 
-        'Config studio,Developer studio,Export data,Import data', 0,
-        NULL, 'T', 14, 99999999999991
-    );
-
-    -- 2. Insert into axuserlevelgroups
-    INSERT INTO {schema}.axuserlevelgroups
-    (
-        username, 
-        usergroup, 
-        startdate, 
-        enddate, 
-        axuserlevelgroupsrow, 
-        axusername, 
-        axusergroup, 
-        axusersid, 
-        axuserlevelgroupsid
-    )
-    VALUES(
-        p_username,           -- Mapping parameter p_username
-        'default', 
-        CURRENT_DATE,    -- Updated startdate
-        NULL, 
-        1, 
-        p_username,           -- Mapping parameter p_username (axusername)
-        'default', 
-        99999999999991,       -- Matching axuserid from above
-        99999999999992        -- Static ID as per query
-    );
-END;
-$$;
-
 CREATE FUNCTION {schema}.sp_rapiddefinition(itid character varying) RETURNS refcursor
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 declare 
 	ORes1 refcursor;
@@ -6478,7 +6477,6 @@ $$;
 
 CREATE FUNCTION {schema}.sysdate() RETURNS timestamp without time zone
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 BEGIN
 RETURN to_CHAR(CURRENT_TIMESTAMP,'DD/MM/YYYY hh24:mi:ss');
@@ -6486,7 +6484,6 @@ END; $$;
 
 CREATE FUNCTION {schema}.t1_axlanguage11x() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     BEGIN
 	
@@ -6509,7 +6506,6 @@ $$;
 
 CREATE FUNCTION {schema}.tr_axpconfigs_iviews() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
  v_cnt NUMERIC(2);
@@ -6557,7 +6553,6 @@ end if;
 
 CREATE FUNCTION {schema}.tr_axpconfigs_tstructs() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
 DECLARE
  V_CNT NUMERIC(2);
@@ -6622,7 +6617,6 @@ $$;
 
 CREATE FUNCTION {schema}.trg_axpeg_sendmsg() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
    	
     begin
@@ -6639,7 +6633,6 @@ $$;
 
 CREATE FUNCTION {schema}.trg_axprocessdefv2() RETURNS trigger
     LANGUAGE plpgsql
-    SET search_path = {schema}, pg_catalog
     AS $$
     declare 
    	v_rem_esc_sfrom varchar;
@@ -6671,158 +6664,50 @@ CREATE FUNCTION {schema}.trg_axprocessdefv2() RETURNS trigger
 end; 
 $$;
 
--- AxGet & AxPut Functions
+CREATE FUNCTION {schema}.trg_peg_processmaster() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+   	
+    begin
 
---DROP FUNCTION {schema}.fn_axdbget(varchar, numeric);
+execute 'create table '||new.processtable||' (eventdatetime varchar(30),taskid varchar(15),transid varchar(8),processname varchar(500),taskname varchar(500),keyvalue varchar(500),taskstatus varchar(15),tasktype varchar(15),username varchar(50),nexttask varchar(1000),displayicon varchar(500),displaytitle text,indexno numeric,keyfield varchar(200),recordid numeric,TimelineTitle varchar(4000))'; 	    
+		
 
-CREATE OR REPLACE FUNCTION {schema}.fn_axdbget(ptransid character varying, precordid numeric DEFAULT 0)
- RETURNS TABLE(transid character varying, dcno character varying, griddc character varying, sqltext text)
- LANGUAGE plpgsql
-AS $function$
-declare 
-rec record;
-rec2 record;
-v_sql text;
-v_primarydctable varchar;
-v_fldnamesary varchar[] DEFAULT  ARRAY[]::varchar[];
-v_fldname_joinsary varchar[] DEFAULT  ARRAY[]::varchar[];
-v_fldname_col varchar;
-v_fldname_normalized varchar;
-v_fldname_srctbl varchar;
-v_fldname_srcfld varchar;
-v_fldname_allowempty varchar;
-v_fldname_dctablename varchar;
-v_fldname_dcflds text;
-v_fldname_normalizedtables varchar[] DEFAULT  ARRAY[]::varchar[];
-v_emptyary varchar[] DEFAULT  ARRAY[]::varchar[];
-v_allflds varchar;
-v_dcdefaultcols varchar;
-begin
-	select tablename into v_primarydctable from axpdc where tstruct = ptransid and dname ='dc1';
-for rec in select string_agg(dname,',' order by dname) dname, asgrid ,lower(tablename) tablename 
-from axpdc where tstruct = ptransid 
-group by asgrid ,lower(tablename)
-order by 1 
-loop
-			select concat(tablename,'=',string_agg(str,'|'))  into v_allflds From(
-			select tablename, concat(fname,'~',srckey,'~',srctf,'~',srcfld,'~',allowempty) str,dcname,ordno
-			from axpflds where tstruct=ptransid and savevalue='T' and lower(tablename) = rec.tablename and datatype !='i'
-			order by dcname ,ordno)a group by a.tablename;				
-	if rec.tablename = v_primarydctable then 		
-		select string_agg(fnames,',') into v_dcdefaultcols 
-		from 
-		(select concat(v_primarydctable,'.',unnest(string_to_array(v_primarydctable||'id,cancel,sourceid,mapname,username,modifiedon,createdby,createdon,wkid,app_level,app_desc,app_slevel,cancelremarks,wfroles',',')))fnames)a;
-	end if;	
-	if rec.asgrid = 'F' and rec.tablename != v_primarydctable then		
-		v_dcdefaultcols = concat(rec.tablename,'.',v_primarydctable||'id,',rec.tablename,'.',rec.tablename||'id');
-	elsif rec.asgrid = 'T' and rec.tablename != v_primarydctable then
-		v_dcdefaultcols =  concat(rec.tablename,'.',v_primarydctable||'id,',rec.tablename,'.',rec.tablename||'id,',rec.tablename,'.',rec.tablename||'row');
-	end if;
-				FOR rec2 IN
-    		select unnest(string_to_array(split_part(unnest(string_to_array(v_allflds,'^')),'=',2),'|')) fldname    		    	       			
-				loop		    	
-					v_fldname_col := split_part(rec2.fldname,'~',1);
-					v_fldname_normalized := split_part(rec2.fldname,'~',2);
-					v_fldname_srctbl := split_part(rec2.fldname,'~',3);
-					v_fldname_srcfld := split_part(rec2.fldname,'~',4);	
-					v_fldname_allowempty := split_part(rec2.fldname,'~',5);				
-					if v_fldname_normalized ='F' then 						
-						v_fldnamesary := array_append(v_fldnamesary,concat(rec.tablename,'.',v_fldname_col)::varchar);					
-					elsif v_fldname_normalized ='T' then	
-						v_fldnamesary := array_append(v_fldnamesary,concat(v_fldname_col,'.',v_fldname_srcfld,' ',v_fldname_col)::varchar);	
-						v_fldname_joinsary := array_append(v_fldname_joinsary,concat(case when v_fldname_allowempty='F' then ' join ' else ' left join ' end,v_fldname_srctbl,' ',v_fldname_col,' on ',rec.tablename,'.',v_fldname_col,' = ',v_fldname_col,'.',v_fldname_srctbl,'id')::Varchar);
-						v_fldname_normalizedtables := array_append(v_fldname_normalizedtables,lower(v_fldname_srctbl));
-					end if;		
-			    end loop;
-	transid = ptransid;
-	dcno = rec.dname;
-	griddc = rec.asgrid;
-	sqltext = concat('select ',v_dcdefaultcols,',',array_to_string(v_fldnamesary,','),' from ',rec.tablename,' ',array_to_string(v_fldname_joinsary,' '),' where ',rec.tablename,'.',v_primarydctable||'id= :recordid');
-	v_fldnamesary:= v_emptyary;
-	v_fldname_joinsary:= v_emptyary;
-	return next;
-end loop;
-END; $function$
-;
+		return new;
 
---DROP FUNCTION {schema}.fn_axdbput(varchar, varchar);
+end; 
+$$;
 
-
-CREATE OR REPLACE FUNCTION {schema}.fn_axdbput(ptransid character varying, ponlysource character varying DEFAULT 'T'::character varying)
- RETURNS TABLE(cnd character varying, transid character varying, dcno character varying, griddc character varying, sqltext text)
- LANGUAGE plpgsql
-AS $function$
-declare 
-rec record;
-v_dcflds text;
-v_primarytable varchar;
-v_dc1defaultcols varchar ;
-v_insertcolumns varchar;
-begin
-select lower(tablename) into v_primarytable from axpdc where tstruct = ptransid and dname='dc1';
-for rec in select string_agg(dname,',' order by dname) dname, asgrid ,lower(tablename) tablename from axpdc where tstruct = ptransid 
-group by asgrid ,lower(tablename)
-order by 1 
-loop
-	select string_agg(':'||fname,',' order by ordno) into v_dcflds from axpflds where tstruct = ptransid and lower(tablename)= rec.tablename 
-	and savevalue ='T';
-	if rec.tablename = v_primarytable then 		
-		v_dc1defaultcols :=':cancel,:sourceid,:mapname,:username,:modifiedon,:createdby,:createdon,:wkid,:app_level,:app_desc,:app_slevel,:cancelremarks,:wfroles,';
-		v_insertcolumns := concat(':'||v_primarytable||'id,',v_dc1defaultcols,v_dcflds);
-	end if;
-	if rec.asgrid = 'F' and rec.tablename != v_primarytable then		
-		v_insertcolumns := concat(':'||v_primarytable||'id,',rec.tablename||'id,',v_dcflds);
-	elsif rec.asgrid = 'T' and rec.tablename != v_primarytable then
-		v_insertcolumns :=  concat(':'||v_primarytable||'id,',':'||rec.tablename||'id,',':'||rec.tablename||'row,',v_dcflds);
-	end if;
-	cnd :='source';
-	transid := ptransid;
-	dcno := rec.dname;
-	griddc := rec.asgrid;
-	sqltext := concat('insert into ',rec.tablename,'(',replace(v_insertcolumns,':',''),')values(',v_insertcolumns,')');
-	return next;
-end loop;  
-return;	
-END; 
-$function$
-;
-
-
---DROP FUNCTION {schema}.fn_axdbput_getrecid(int4, varchar, int4);
-
-
-CREATE SEQUENCE {schema}.seq_axdb_recordid
-    START 1
-    INCREMENT 1
-    NO CYCLE;
-
-   
-GRANT USAGE, SELECT ON SEQUENCE {schema}.seq_axdb_recordid TO {schema};
-
-
-CREATE OR REPLACE FUNCTION {schema}.fn_axdbput_getrecid(
-    psiteno    integer,
-    pnoofrows  integer
-)
-RETURNS TABLE (recordid varchar(16)) AS
-$$
-DECLARE
-    v_seq_num     bigint;
-    v_pad_length  int;
-    v_final       varchar;
+CREATE FUNCTION {schema}.setup_new_user(p_username text, p_email text, p_nickname text, p_password text) RETURNS void
+    LANGUAGE plpgsql
+    SET search_path = {schema}, pg_catalog
+    AS $$
 BEGIN
-    IF length(psiteno::varchar) = 1 THEN
-        v_pad_length := 15;
-    ELSIF length(psiteno::varchar) = 2 THEN
-        v_pad_length := 14;
-    ELSIF length(psiteno::varchar) = 3 THEN
-        v_pad_length := 13;
-    END IF;
-    FOR i IN 1 .. pnoofrows LOOP
-        v_seq_num := nextval('seq_axdb_recordid');
-        v_final := psiteno || lpad(v_seq_num::varchar, v_pad_length, '0');
-        recordid := v_final;
-        RETURN NEXT;
-    END LOOP;
+    INSERT INTO {schema}.axusers
+    (
+        username, "password", usergroup, groupno, build, manage, tools,
+        email, active, isfirsttime, workflow, actflag, importstruct,
+        exportstruct, appmanager, debug, import_data, export_data,
+        pusername, nickname, ppassword, usertype, pwdauth, otpauth,
+        allusergroup, appmgraccess, adminaccess, homepage, singleloginkey, staysignedin, signinexpiry,
+        axusersid
+    )
+    VALUES (
+        p_username, p_password, 'default', 2, 'T', 'T', 'T',
+        p_email, 'T', 'F', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T',
+        p_username, p_nickname, p_password, NULL, 'T', 'F', 'default', 'T',
+        'Config studio,Developer studio,Export data,Import data', 0,
+        NULL, 'T', 14, 99999999999991
+    );
+
+    INSERT INTO {schema}.axuserlevelgroups
+    (
+        username, usergroup, startdate, enddate, axuserlevelgroupsrow,
+        axusername, axusergroup, axusersid, axuserlevelgroupsid
+    )
+    VALUES(
+        p_username, 'default', CURRENT_DATE, NULL, 1,
+        p_username, 'default', 99999999999991, 99999999999992
+    );
 END;
-$$ LANGUAGE plpgsql;
+$$;

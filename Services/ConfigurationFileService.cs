@@ -25,7 +25,9 @@ public class ConfigurationFileService : IConfigurationFileService
         // 1. Load source files
         string iniPath = Path.Combine(_appConnSettings.AxpertWebScriptsPath, "AppSettings.ini");
         string xmlPath = Path.Combine(_appConnSettings.AxpertWebScriptsPath, "axapps.xml");
+        string configPath = Path.Combine(_appConnSettings.ARMWebScriptsPath, "appsetting.config");
         string templateConn = _dbSettings.AxiControlSchemaName;
+        string templatePackageConn = _dbSettings.AxiPackageSchemaName;
         string sharedDB = _dbSettings.SharedDatabase;
 
         // 2. Process AppSettings.ini (JSON Logic)
@@ -40,6 +42,12 @@ public class ConfigurationFileService : IConfigurationFileService
         CloneXmlNode(xmlDoc, templateConn, newAxiAccId, sharedDB);
         string updatedXml = xmlDoc.ToString();
 
+        // 3b. Process ArmWebScripts/appsettings.config (JSON Logic)
+        var configJsonContent = await File.ReadAllTextAsync(configPath, ct);
+        var configRoot = JsonNode.Parse(configJsonContent);
+        CloneJsonSection(configRoot!, "appsettings", templatePackageConn, newAxiAccId, "");
+        string updatedConfigJson = configRoot!.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+
         string[] configDestinationPaths = [_appConnSettings.AxpertWebScriptsPath, _appConnSettings.ARMWebScriptsPath];
         // 4. Save to destinations with Backups
         foreach (var destDir in configDestinationPaths)
@@ -49,6 +57,7 @@ public class ConfigurationFileService : IConfigurationFileService
         }
 
         await BackupAndSave(_appConnSettings.ARMPath, "AppSettings.ini", updatedJson, ct);
+        await BackupAndSave(_appConnSettings.ARMWebScriptsPath, "appsetting.config", updatedConfigJson, ct);
 
         return true;
     }
@@ -75,7 +84,13 @@ public class ConfigurationFileService : IConfigurationFileService
                 }
             }
 
+            if(sectionName == "appsettings" && newNode!["projectname"] != null)
+            {
+                newNode["projectname"] = newSchemaConnection;
+            }
+
             section[newSchemaConnection] = newNode;
+
             _logger.LogDebug("Cloned JSON section {Section}:{NewKey}", sectionName, newSchemaConnection);
         }
     }

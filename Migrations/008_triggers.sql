@@ -1,8 +1,8 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
 CREATE TRIGGER ax_homebuild_master_bir BEFORE INSERT ON {schema}.ax_homebuild_master FOR EACH ROW EXECUTE FUNCTION {schema}.fn_ax_homebuild_master();
 
 CREATE TRIGGER ax_homebuild_saved_bir BEFORE INSERT ON {schema}.ax_homebuild_saved FOR EACH ROW EXECUTE FUNCTION {schema}.fn_homebuild_saved_bir();
@@ -60,5 +60,7 @@ CREATE TRIGGER trg_axsms BEFORE INSERT ON {schema}.axsms FOR EACH ROW EXECUTE FU
 CREATE TRIGGER trg_axuserlevelgroups BEFORE INSERT OR UPDATE ON {schema}.axuserlevelgroups FOR EACH ROW EXECUTE FUNCTION {schema}.fn_axuserlevelgroups();
 
 CREATE TRIGGER trg_axusers BEFORE INSERT OR UPDATE ON {schema}.axusers FOR EACH ROW EXECUTE FUNCTION {schema}.fn_axusers();
+
+CREATE TRIGGER trg_peg_processmaster AFTER INSERT ON {schema}.axpdef_peg_processmaster FOR EACH ROW EXECUTE FUNCTION {schema}.trg_peg_processmaster();
 
 CREATE TRIGGER trg_updatdsign BEFORE INSERT OR UPDATE ON {schema}.axdsignconfig FOR EACH ROW EXECUTE FUNCTION {schema}.fn_updatdsign();

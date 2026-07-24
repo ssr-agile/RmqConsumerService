@@ -1,8 +1,8 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
 CREATE SEQUENCE {schema}.ax_entity_relseq
     START WITH 101
     INCREMENT BY 1
@@ -192,6 +192,13 @@ CREATE SEQUENCE {schema}.outbound_seq
     NO MAXVALUE
     CACHE 1;
 
+CREATE SEQUENCE {schema}.seq_axdb_recordid
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 ALTER SEQUENCE {schema}.ax_homebuild_master_homebuild_id_seq OWNED BY {schema}.ax_homebuild_master.homebuild_id;
 
 ALTER SEQUENCE {schema}.ax_homebuild_saved_homebuild_id_seq OWNED BY {schema}.ax_homebuild_saved.homebuild_id;
@@ -215,55 +222,3 @@ ALTER TABLE ONLY {schema}.axsms ALTER COLUMN recordid SET DEFAULT nextval('{sche
 ALTER TABLE ONLY {schema}.inbound ALTER COLUMN inboundid SET DEFAULT nextval('{schema}.inbound_inboundid_seq'::regclass);
 
 ALTER TABLE ONLY {schema}.outbound ALTER COLUMN outboundid SET DEFAULT nextval('{schema}.outbound_outboundid_seq'::regclass);
-
-SELECT pg_catalog.setval('{schema}.ax_entity_relseq', 1244, true);
-
-SELECT pg_catalog.setval('{schema}.ax_homebuild_master_homebuild_id_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_homebuild_master_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_homebuild_saved_homebuild_id_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_homebuild_saved_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_layoutdesign_saved_seq', 78, true);
-
-SELECT pg_catalog.setval('{schema}.ax_layoutdesign_seq', 78, true);
-
-SELECT pg_catalog.setval('{schema}.ax_notify_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_page_saved_seq', 1, true);
-
-SELECT pg_catalog.setval('{schema}.ax_page_template_seq', 9, true);
-
-SELECT pg_catalog.setval('{schema}.ax_pages_seq', 10, false);
-
-SELECT pg_catalog.setval('{schema}.ax_widg_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_widget_publish_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_widget_saved_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.ax_widget_widget_id_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axdsignmail_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axp_mailjobsid', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axpdef_genseq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axsms_recordid_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axsms_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.axsmsid', 1, false);
-
-SELECT pg_catalog.setval('{schema}.connectnoseq', 119, true);
-
-SELECT pg_catalog.setval('{schema}.inbound_inboundid_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.inbound_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.outbound_outboundid_seq', 1, false);
-
-SELECT pg_catalog.setval('{schema}.outbound_seq', 1, false);

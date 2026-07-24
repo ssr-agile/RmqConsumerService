@@ -1,5 +1,4 @@
-﻿-- Tenant ownership and isolation permissions.
--- This script must run after tables, sequences, constraints, indexes, views, functions, and triggers are created.
+-- Tenant ownership and isolation permissions.
 
 ALTER SCHEMA {schema} OWNER TO {schema};
 
@@ -8,7 +7,6 @@ DECLARE
     v_schema text := {schema_name};
     r record;
 BEGIN
-    -- 1) Fix schema owner
     IF EXISTS (
         SELECT 1
         FROM pg_namespace n
@@ -19,7 +17,6 @@ BEGIN
         EXECUTE format('ALTER SCHEMA %I OWNER TO %I', v_schema, v_schema);
     END IF;
 
-    -- 2) Fix tables / partitioned tables / views / materialized views / foreign tables
     FOR r IN
         SELECT c.relkind, n.nspname AS schema_name, c.relname AS object_name
         FROM pg_class c
@@ -41,7 +38,6 @@ BEGIN
         END IF;
     END LOOP;
 
-    -- 3) Fix sequences, including owned/identity sequences
     FOR r IN
         SELECT n.nspname AS schema_name, c.relname AS object_name
         FROM pg_class c
@@ -55,7 +51,6 @@ BEGIN
         EXECUTE format('ALTER SEQUENCE %I.%I OWNER TO %I', r.schema_name, r.object_name, v_schema);
     END LOOP;
 
-    -- 4) Fix routines: functions, procedures, aggregates, window functions
     FOR r IN
         SELECT n.nspname AS schema_name,
                p.proname AS object_name,
@@ -71,7 +66,6 @@ BEGIN
                        r.schema_name, r.object_name, r.args, v_schema);
     END LOOP;
 
-    -- 5) Fix user-defined types and domains. Exclude table row types and array types.
     FOR r IN
         SELECT n.nspname AS schema_name, t.typname AS object_name
         FROM pg_type t
@@ -89,13 +83,11 @@ BEGIN
     RAISE NOTICE 'Ownership fix completed for schema: %', v_schema;
 END $$;
 
--- Remove inherited/default public access.
 REVOKE ALL ON SCHEMA {schema} FROM PUBLIC;
 REVOKE ALL ON ALL TABLES IN SCHEMA {schema} FROM PUBLIC;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA {schema} FROM PUBLIC;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA {schema} FROM PUBLIC;
 
--- Grant access only to matching tenant role.
 GRANT USAGE, CREATE ON SCHEMA {schema} TO {schema};
 GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
 ON ALL TABLES IN SCHEMA {schema}
@@ -107,7 +99,6 @@ GRANT EXECUTE
 ON ALL FUNCTIONS IN SCHEMA {schema}
 TO {schema};
 
--- Default privileges for future objects created by tenant role in this schema.
 ALTER DEFAULT PRIVILEGES FOR ROLE {schema} IN SCHEMA {schema}
 REVOKE ALL ON TABLES FROM PUBLIC;
 ALTER DEFAULT PRIVILEGES FOR ROLE {schema} IN SCHEMA {schema}

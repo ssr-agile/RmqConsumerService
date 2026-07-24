@@ -1,8 +1,8 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
 CREATE TABLE {schema}.axpdef_axpanalytics_mdata (
     ftransid character varying(10),
     fcaption character varying(500),
@@ -903,7 +903,9 @@ CREATE TABLE {schema}.axdirectsql (
     cacheinterval character varying(10),
     encryptedflds character varying(4000),
     adsdesc text,
-    smartlistcnd character varying(500)
+    smartlistcnd character varying(500),
+    pagination character varying(1),
+    applydimensions character varying(1)
 );
 
 CREATE TABLE {schema}.axdirectsql_metadata (
@@ -1316,6 +1318,24 @@ CREATE TABLE {schema}.axgrouptstructs (
     ftransid character varying(10)
 );
 
+CREATE TABLE {schema}.axi_command_prompts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    cmdtoken integer,
+    wordpos integer,
+    prompt character varying(200),
+    promptsource character varying(500),
+    promptparams character varying(100),
+    promptvalues character varying(500),
+    props character varying(100),
+    extraparams character varying(1000),
+    requesturl character varying(2000)
+);
+
+CREATE TABLE {schema}.axi_commands (
+    cmdtoken integer NOT NULL,
+    command_group character varying(50) NOT NULL,
+    command character varying(50) NOT NULL
+);
 
 CREATE TABLE {schema}.axiconmenu (
     parentpagename character varying(50) NOT NULL,
@@ -2277,6 +2297,16 @@ CREATE TABLE {schema}.axp_transcheck (
     sessionid character varying(50)
 );
 
+CREATE TABLE {schema}.axp_tstructprops (
+    name character varying(5),
+    caption character varying(500),
+    keyfield character varying(200),
+    userconfigured character(1),
+    createdon character varying(30),
+    updatedon character varying(30),
+    createdby character varying(100),
+    updatedby character varying(100)
+);
 
 CREATE TABLE {schema}.axp_versionchangedetails (
     verno character varying(50),
@@ -2800,7 +2830,22 @@ CREATE TABLE {schema}.axpdef_peg_processmaster (
     amendment character varying(1),
     cards character varying(4000),
     amendconfirm character varying(1),
-    amendconfirmmsg text
+    amendconfirmmsg text,
+    processform character varying(250),
+    ptransid character varying(10),
+    keyfieldui character varying(250),
+    keyfield character varying(50),
+    tbl_approvals character varying(4000),
+    post_keyfieldui character varying(250),
+    post_keyfield character varying(50),
+    post_display character varying(50)
+);
+
+CREATE TABLE {schema}.axpdef_peg_processmst_appr (
+    axpdef_peg_processmst_apprid numeric(16,0) NOT NULL,
+    axpdef_peg_processmasterid numeric(16,0),
+    axpdef_peg_processmst_apprrow integer,
+    taskname character varying(100)
 );
 
 CREATE TABLE {schema}.axpdef_peg_usergroups (
@@ -3165,17 +3210,21 @@ CREATE TABLE {schema}.axpermissions (
     allowcreate character varying(3),
     viewcnd character varying(100),
     viewctrl character varying(1),
-    view_flds character varying(4000),
+    view_flds text,
     viewlist character varying(4000),
     editcnd character varying(100),
     editctrl character varying(1),
-    edit_flds character varying(4000),
+    edit_flds text,
     editlist character varying(4000),
     fieldmasks character varying(4000),
     fieldmaskstr character varying(4000),
     dupchk character varying(500),
     fromsource character varying(1),
-    axusername character varying(100)
+    axusername character varying(100),
+    view_dcs_ui character varying(4000),
+    view_flds_ui character varying(4000),
+    edit_dcs_ui character varying(4000),
+    edit_flds_ui character varying(4000)
 );
 
 CREATE TABLE {schema}.axpertlog (
@@ -3649,7 +3698,7 @@ CREATE TABLE {schema}.axprocessdefv2 (
     keyfieldcaption character varying(500),
     transid character varying(10),
     keyfield character varying(250),
-    axpdef_peg_processmasterid numeric(15,0),
+    axpdef_peg_processmasterid numeric(16,0),
     postnotify character varying(4000),
     assignto character varying(50),
     assigntoflg character varying(10),
@@ -5567,24 +5616,6 @@ CREATE TABLE {schema}.templates (
     elements character varying(100),
     cvalue text,
     dupchk character varying(500)
-);
-
-CREATE TABLE {schema}.testf1 (
-    testf1id numeric(16,0) NOT NULL,
-    cancel character varying(1),
-    sourceid numeric(16,0),
-    mapname character varying(20),
-    username character varying(50),
-    modifiedon timestamp without time zone,
-    createdby character varying(50),
-    createdon timestamp without time zone,
-    wkid character varying(15),
-    app_level numeric(3,0),
-    app_desc numeric(1,0),
-    app_slevel numeric(3,0),
-    cancelremarks character varying(150),
-    wfroles character varying(250),
-    field1 character varying(50)
 );
 
 CREATE TABLE {schema}.tstruct_mst_details (

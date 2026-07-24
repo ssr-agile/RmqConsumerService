@@ -1,8 +1,8 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
 CREATE VIEW {schema}.ax_inbound_status AS
  SELECT a.filename,
     (a.recdon)::date AS recdon,

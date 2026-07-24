@@ -1,8 +1,10 @@
--- Auto-generated tenant migration from golden dump.
+-- Auto-generated tenant migration from metapost114 golden dump.
 -- Runtime placeholder: {schema}
--- Execute inside a single transaction after validating schemaName as an identifier.
 SET LOCAL search_path = {schema}, pg_catalog;
 SET LOCAL check_function_bodies = false;
+
+-- Primary key, unique and check constraints. Foreign keys are applied after seed data.
+
 ALTER TABLE ONLY {schema}.axautoprints
     ADD CONSTRAINT aglaxautoprintsid PRIMARY KEY (axautoprintsid);
 
@@ -125,6 +127,9 @@ ALTER TABLE ONLY {schema}.axpdef_peg_grpfilter
 
 ALTER TABLE ONLY {schema}.axpdef_peg_processmaster
     ADD CONSTRAINT aglaxpdef_peg_processmasterid PRIMARY KEY (axpdef_peg_processmasterid);
+
+ALTER TABLE ONLY {schema}.axpdef_peg_processmst_appr
+    ADD CONSTRAINT aglaxpdef_peg_processmst_apprid PRIMARY KEY (axpdef_peg_processmst_apprid);
 
 ALTER TABLE ONLY {schema}.axpdef_prcards
     ADD CONSTRAINT aglaxpdef_prcardsid PRIMARY KEY (axpdef_prcardsid);
@@ -294,9 +299,6 @@ ALTER TABLE ONLY {schema}.tconfiguration
 ALTER TABLE ONLY {schema}.templates
     ADD CONSTRAINT agltemplatesid PRIMARY KEY (templatesid);
 
-ALTER TABLE ONLY {schema}.testf1
-    ADD CONSTRAINT agltestf1id PRIMARY KEY (testf1id);
-
 ALTER TABLE ONLY {schema}.tstruct_mst_details
     ADD CONSTRAINT agltstruct_mst_detailsid PRIMARY KEY (tstruct_mst_detailsid);
 
@@ -344,6 +346,12 @@ ALTER TABLE ONLY {schema}.axcustomviews
 
 ALTER TABLE ONLY {schema}.axerrorlog
     ADD CONSTRAINT axerrorlog_pkey PRIMARY KEY (username, eventdate);
+
+ALTER TABLE ONLY {schema}.axi_command_prompts
+    ADD CONSTRAINT axi_command_prompts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY {schema}.axi_commands
+    ADD CONSTRAINT axi_commands_pkey PRIMARY KEY (cmdtoken);
 
 ALTER TABLE ONLY {schema}.axiconmenu
     ADD CONSTRAINT axiconmenu_pkey PRIMARY KEY (parentpagename);
@@ -443,33 +451,3 @@ ALTER TABLE ONLY {schema}.tstructs
 
 ALTER TABLE ONLY {schema}.axmmetadatamaster
     ADD CONSTRAINT unique_structtype_structname UNIQUE (structtype, structname);
-
-ALTER TABLE ONLY {schema}.ax_homebuild_responsibility
-    ADD CONSTRAINT ax_homebuild_responsibility_homebuild_id_fkey FOREIGN KEY (homebuild_id) REFERENCES {schema}.ax_homebuild_master(homebuild_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_homebuild_sd_responsibility
-    ADD CONSTRAINT ax_homebuild_sd_responsibility_homebuild_id_fkey FOREIGN KEY (homebuild_id) REFERENCES {schema}.ax_homebuild_saved(homebuild_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_hp_user_level_widget
-    ADD CONSTRAINT ax_hp_user_level_widget_page_id_fkey FOREIGN KEY (page_id) REFERENCES {schema}.ax_pages(page_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_page_responsibility
-    ADD CONSTRAINT ax_page_responsibility_page_id_fkey FOREIGN KEY (page_id) REFERENCES {schema}.ax_pages(page_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_page_sd_responsibility
-    ADD CONSTRAINT ax_page_sd_responsibility_page_id_fkey FOREIGN KEY (page_id) REFERENCES {schema}.ax_page_saved(page_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_widget_published
-    ADD CONSTRAINT ax_widget_published_page_id_fkey FOREIGN KEY (page_id) REFERENCES {schema}.ax_pages(page_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_widget_published
-    ADD CONSTRAINT ax_widget_published_parent_widget_id_fkey FOREIGN KEY (parent_widget_id) REFERENCES {schema}.ax_widget_saved(widget_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_widget_responsibility
-    ADD CONSTRAINT ax_widget_responsibility_widget_id_fkey FOREIGN KEY (widget_id) REFERENCES {schema}.ax_widget(widget_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.ax_widget_saved
-    ADD CONSTRAINT ax_widget_saved_page_id_fkey FOREIGN KEY (page_id) REFERENCES {schema}.ax_page_saved(page_id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY {schema}.axresponse
-    ADD CONSTRAINT axresponse_requestid_fkey FOREIGN KEY (requestid) REFERENCES {schema}.axrequest(requestid);

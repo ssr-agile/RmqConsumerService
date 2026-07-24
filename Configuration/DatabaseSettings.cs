@@ -10,6 +10,7 @@ public sealed class DatabaseSettings
     public string SharedDatabase { get; init; } = "axidb";
     public string MigrationsPath { get; init; } = "Migrations";
     public string AxiControlSchemaName { get; init; } = "axiadmin";
+    public string AxiPackageSchemaName { get; init; } = "devpgbase114";
     public string DefaultRolePassword { get; init; } = "log";
     public string AxiClientApiUrl { get; init; } = string.Empty;
     public string AppDomain { get; init; } = string.Empty;
