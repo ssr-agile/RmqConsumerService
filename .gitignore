@@ -1,9 +1,43 @@
-bin/
-obj/
-Logs/
-*.user
+# Build results
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/*
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
 .vs/
+*.user
 *.yaml
 appsettings.*.json
 axiglobalconfig.json
 Properties/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+
+# Others
+~$*
+*~
+
+# Include
+!bin/Release/
+
+# Ignore everything inside Release, except the net8.0 folder
+bin/Release/*
+!bin/Release/net8.0/
+
+# Ignore everything inside net8.0, except the publish folder
+bin/Release/net8.0/*
+!bin/Release/net8.0/publish/
